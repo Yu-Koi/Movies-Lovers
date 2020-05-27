@@ -28,11 +28,11 @@ const Lists = () => {
 
         <ListItem button>
           <ListItemIcon>
-            <Link to="/Estrenos">
+            <Link to="/Premieres">
               <StarHalfIcon />
             </Link>
           </ListItemIcon>
-          <ListItemText primary="Estrenos" />
+          <ListItemText primary="Premieres" />
         </ListItem>
 
         <ListItem button>
@@ -46,20 +46,20 @@ const Lists = () => {
 
         <ListItem button>
           <ListItemIcon>
-            <Link to="/Peliculas">
+            <Link to="/Movies">
               <TheatersIcon />
             </Link>
           </ListItemIcon>
-          <ListItemText primary="Peliculas" />
+          <ListItemText primary="Movies" />
         </ListItem>
 
         <ListItem button>
           <ListItemIcon>
-            <Link to="/MisFavoritas">
+            <Link to="/MyFavourites">
               <FavoriteBorderIcon />
             </Link>
           </ListItemIcon>
-          <ListItemText primary="Mis Favoritas" />
+          <ListItemText primary="My Favourites" />
         </ListItem>
 
         <Divider />
