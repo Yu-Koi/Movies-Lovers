@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import { auth, db } from "../firebase";
 import { Grid } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import { Container, Typography, Card } from "@material-ui/core";
+import { Link, withRouter } from "react-router-dom";
 
 import Styles from "./Styles";
 // validaciones
@@ -14,20 +16,35 @@ const STATE_INICIAL = {
   password: "",
 };
 
-const CreateAccount = () => {
+const CreateAccount = (props) => {
+  const [error, saveError] = useState(null);
+
+  const register = async () => {
+    try {
+      const res = await auth.createUserWithEmailAndPassword(email, password);
+      console.log(res);
+      await db.collection("users").doc(res.user.email).set({
+        name: name,
+        email: email,
+        password: password,
+      });
+
+      props.history.push("/");
+    } catch (error) {
+      console.error("Hubo un error al crear el usuario", error.message);
+      saveError(error.message);
+    }
+  };
+
   const {
     values,
     errors,
-    submitForm,
-    handleChange,
     handleSubmit,
-  } = useValidation(STATE_INICIAL, validateCreateAccount, createAccount);
+    handleChange,
+    handleBlur,
+  } = useValidation(STATE_INICIAL, validateCreateAccount, register);
 
   const { name, email, password } = values;
-
-  function createAccount() {
-    console.log("creando cuenta...");
-  }
 
   const classes = Styles();
   return (
@@ -46,7 +63,9 @@ const CreateAccount = () => {
                   type="text"
                   name="name"
                   value={name}
+                  autoComplete="off"
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
               {errors.name && <p>{errors.name}</p>}
@@ -58,7 +77,9 @@ const CreateAccount = () => {
                   type="email"
                   name="email"
                   value={email}
+                  autoComplete="off"
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
               {errors.email && <p>{errors.email}</p>}
@@ -70,12 +91,19 @@ const CreateAccount = () => {
                   type="password"
                   name="password"
                   value={password}
+                  autoComplete="off"
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
               {errors.password && <p>{errors.password}</p>}
+              {error && <p>{error}</p>}
 
               <input type="submit" value="Crear Cuenta" />
+
+              <Link to="/Login">
+                <button bgcolor="true">¿ya estas registrado?</button>
+              </Link>
             </form>
           </Grid>
         </Grid>
@@ -84,4 +112,4 @@ const CreateAccount = () => {
   );
 };
 
-export default CreateAccount;
+export default withRouter(CreateAccount);

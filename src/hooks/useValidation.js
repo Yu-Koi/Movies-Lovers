@@ -37,12 +37,19 @@ const useValidation = (stateInitial, validate, fn) => {
 
   }
 
+  //Cuando se realiza el evento blur(que se sale el usuario del campo sin escribir)
+  const handleBlur = () => {
+    const errorsValidation = validate(values);
+    saveErrors(errorsValidation);
+  }
+
   return {
       values,
       errors,
       submitForm,
       handleChange,
       handleSubmit,
+      handleBlur
 
   }
 };

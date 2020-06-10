@@ -17,8 +17,11 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Divider from '@material-ui/core/Divider';
 import Lists from './Lists';
-import { Link } from "react-router-dom";
+import { Link, withRouter} from "react-router-dom";
 import { Button } from '@material-ui/core';
+
+
+import { auth } from "../firebase";
 
 
 const drawerWidth = 240;
@@ -121,9 +124,18 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-const Navbar = () => {
+const Navbar = (props) => {
 
-  const user = false;
+  
+
+  const logout = () => {
+    auth.signOut()
+    .then(() => {
+      props.history.push('/Login')
+
+    })
+
+  }
 
     const classes = useStyles();
     const theme = useTheme();
@@ -163,7 +175,11 @@ const Navbar = () => {
   };
 
   const menuId = 'primary-search-account-menu';
+
+
+  
   const renderMenu = (
+  
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -173,12 +189,18 @@ const Navbar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link to="/Profile">
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      </Link>
-      <Link to="/out">
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-      </Link>
+      
+     
+      <MenuItem onClick={handleMenuClose} value="Profile">
+       <Button href="/Profile">Profile</Button>
+      </MenuItem>
+     
+     
+     
+      <MenuItem onClick={handleMenuClose} value="Logout">
+       <Button onClick= {() => logout()}>Logout</Button>
+      </MenuItem>
+     
     </Menu>
   );
 
@@ -193,12 +215,16 @@ const Navbar = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <Link to="/Profile">
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      </Link>
-      <Link to="/out">
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-      </Link>
+      <MenuItem onClick={handleMobileMenuClose} value="Profile">
+       <Button href="/Profile">Profile</Button>
+      </MenuItem>
+
+      <MenuItem onClick={handleMobileMenuClose} value="Logout">
+       <Button onClick= {() => logout()}>Logout</Button>
+      </MenuItem>
+     
+      
+      
     </Menu>
   );
     return (
@@ -211,17 +237,33 @@ const Navbar = () => {
       })}
       >
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            
-             
-          >
-            <MenuIcon />
-          </IconButton>
+
+          { props.user !== null? (
+
+            <>
+
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              
+              
+            >
+              <MenuIcon />
+            </IconButton>
+
+
+            </>
+
+          ): null
+
+          }
+
+
+
+       
           <Typography className={classes.title} variant="h6" noWrap>
             Movies Lovers
           </Typography>
@@ -242,13 +284,13 @@ const Navbar = () => {
           <div className={classes.sectionDesktop}>
 
 
-          { user ? (
+          { props.user !== null ? (
               <>
-              <p> Hola: Nerymar</p>
-              <Button>Cerrar Sesion</Button>
+              <p> Hola:{props.user.email}</p>
+
               </>
 
-            ) : (
+            ) :(
               <>
               <Link to="/Login">
                 <Button>Login</Button>
@@ -259,21 +301,40 @@ const Navbar = () => {
               </Link>
               </> 
 
-            )}
+            )
             
+            }
+
+           { props.user !== null ? (
+
+             <>
+
             <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+            color="inherit"
             >
-              <AccountCircle />
+            <AccountCircle />
             </IconButton>
+
+            </>
+
+            ):null
+            
+            }
+           
           </div>
+
+
           <div className={classes.sectionMobile}>
-            <IconButton
+
+          { props.user !== null ? (
+
+            <>
+              <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
@@ -282,6 +343,11 @@ const Navbar = () => {
             >
               <MoreIcon />
             </IconButton>
+            </>
+
+          ):null
+          
+          }
             
           </div>
         </Toolbar>
@@ -310,4 +376,4 @@ const Navbar = () => {
     );
 }
 
-export default Navbar
+export default withRouter(Navbar)

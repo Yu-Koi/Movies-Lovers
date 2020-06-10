@@ -11,12 +11,21 @@ import Profile from "./Components/Profile.jsx";
 import Login from "./Components/Login.jsx";
 import CreateAccount from "./Components/CreateAccount.jsx";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import useAuthentication from "./hooks/useAuthentication";
+
+
+
 
 function App() {
+
+  const user = useAuthentication();
+  console.log(user);
+
+
   return (
     <Fragment>
       <Router>
-        <Navbar />
+        <Navbar user={useAuthentication()}/>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -42,7 +51,6 @@ function App() {
           <Route path="/CreateAccount">
             <CreateAccount />
           </Route>
-          
         </Switch>
       </Router>
     </Fragment>
